@@ -238,11 +238,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--k);-webkit-
 .cal-dia.on .dc{color:rgba(255,255,255,.35)}
 
 /* ── GRUPOS ────────────────────────────────────── */
-.grupos-tabs-wrap{display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin-bottom:0;background:var(--ln);border:1px solid var(--ln)}
-.gtab{padding:.55rem .5rem;background:var(--w);border:none;border-right:1px solid var(--ln);border-bottom:1px solid var(--ln);font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--g3);cursor:pointer;transition:.1s;text-align:center}
-.gtab:hover{color:var(--k);background:var(--g1)}
-.gtab.on{background:var(--p);color:#fff;border-color:var(--p)}
-.gtab.ecu.on{background:linear-gradient(90deg,var(--ey) 33%,var(--eb) 33%,var(--eb) 66%,var(--er) 66%);color:#fff;border-color:var(--eb)}
+.grupos-tabs-wrap{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;margin-bottom:0;background:var(--g2)}
+.gtab{padding:.55rem .5rem;background:var(--k);border:none;font-size:.65rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.7);cursor:pointer;transition:.15s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.35rem}
+.gtab:hover{background:#222;color:#fff}
+.gtab.on{background:var(--p);color:#fff}
+.gtab.ecu{background:var(--k);border-left:3px solid var(--ey)}
+.gtab.ecu.on{background:var(--ey);color:var(--k)}
+.gtab.ecu:hover{background:#1a1600}
+.gtab-flags{display:flex;align-items:center;gap:2px}
+.gtab-flags img{width:16px;height:11px;object-fit:cover;border:1px solid rgba(255,255,255,.15);opacity:.8}
+.gtab.on .gtab-flags img{opacity:1}
+.gtab.ecu.on .gtab-flags img{border-color:rgba(0,0,0,.2)}
 
 .gtable{background:var(--w);border:1px solid var(--ln);border-top:none;margin-bottom:1.25rem}
 .gt-h{display:grid;grid-template-columns:20px 1fr repeat(5,30px);background:var(--k);padding:.48rem .85rem;font-size:.52rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.3)}
@@ -280,26 +286,34 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--k);-webkit-
 .ff-cd{font-size:.68rem;font-weight:700;color:var(--p);margin-top:.3rem}
 
 .bracket-scroll{overflow-x:auto;padding-bottom:1rem}
-.bracket-grid{display:flex;gap:1px;background:var(--ln);min-width:900px}
-.b-col{background:var(--bg);padding:.75rem .5rem;flex:1;min-width:130px}
-.b-col-title{font-size:.52rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--g3);text-align:center;margin-bottom:.6rem}
-.b-match{background:var(--w);border:1px solid var(--ln);margin-bottom:.5rem}
-.b-match.pronosticado{border-color:var(--p);border-left:3px solid var(--p)}
-.b-eq{display:flex;align-items:center;gap:.35rem;padding:.38rem .5rem;border-bottom:1px solid var(--ln);font-size:.65rem;font-weight:500;cursor:pointer;transition:.1s}
-.b-eq:last-child{border:none}
-.b-eq:hover{background:var(--pl)}
-.b-eq.sel{background:var(--pl);color:var(--p);font-weight:700}
-.b-ef{width:14px;height:10px;object-fit:cover;border:1px solid var(--ln)}
-.b-pend{color:var(--g3);font-style:italic;font-size:.6rem;padding:.38rem .5rem}
-.b-final-col{background:var(--k);padding:.75rem .5rem;min-width:130px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.b-final-title{font-size:.6rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--ey);text-align:center;margin-bottom:.5rem}
-.b-trofeo{font-size:2rem;text-align:center;margin:.5rem 0}
+.bracket-tree{display:flex;align-items:stretch;gap:2px;min-width:960px;background:var(--g2)}
+.bt-col{background:var(--bg);padding:.5rem;display:flex;flex-direction:column;justify-content:space-around;flex:1;min-width:120px}
+.bt-col-title{font-size:.52rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--g3);text-align:center;padding:.4rem;margin-bottom:.25rem;background:var(--w);border:1px solid var(--ln)}
+.bt-match{background:var(--w);border:1px solid var(--ln);margin-bottom:.35rem}
+.bt-eq{display:flex;align-items:center;gap:.3rem;padding:.35rem .45rem;border-bottom:1px solid var(--ln);font-size:.62rem;font-weight:500;cursor:pointer;transition:.1s}
+.bt-eq:last-child{border:none}
+.bt-eq:hover{background:var(--pl)}
+.bt-eq.sel{background:var(--pl);color:var(--p);font-weight:700}
+.bt-pend{color:var(--g3);font-style:italic;font-size:.58rem;padding:.35rem .45rem}
+.bt-final{background:var(--k);padding:.75rem .5rem;min-width:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem}
+.bt-final-title{font-size:.58rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--ey);text-align:center}
+.bt-trofeo{font-size:2.2rem}
+.bt-3rd-title{font-size:.5rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4);text-align:center;margin-top:.5rem;margin-bottom:.3rem}
 
 /* ── SIMULADOR ─────────────────────────────────── */
 .sim-banner{background:#1a1a1a;border:2px solid var(--ey);padding:.65rem 1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.65rem}
 .sim-badge{background:var(--ey);color:var(--k);font-size:.6rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:.28rem .6rem;flex-shrink:0}
 .sim-txt{font-size:.75rem;color:rgba(255,255,255,.55);line-height:1.5}
 .sim-txt strong{color:var(--ey)}
+
+.sim-t3-info{background:var(--k);border-left:3px solid var(--ey);padding:.65rem 1rem;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.sim-t3-info p{font-size:.75rem;color:rgba(255,255,255,.6);line-height:1.5}
+.sim-t3-info p strong{color:var(--ey)}
+.sim-t3-counter{text-align:center;flex-shrink:0}
+.sim-t3-counter .num{font-size:1.6rem;font-weight:900;color:var(--ey);display:block;line-height:1}
+.sim-t3-counter .lbl{font-size:.52rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4)}
+.sim-t3-progress{height:3px;background:rgba(255,255,255,.1);margin-top:.4rem;width:60px}
+.sim-t3-progress-bar{height:100%;background:var(--ey);transition:.3s}
 
 .sim-grupos{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1.5rem}
 @media(max-width:700px){.sim-grupos{grid-template-columns:repeat(2,1fr)}}
@@ -310,8 +324,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--k);-webkit-
 .sim-eq:hover{background:var(--g1)}
 .sim-eq.c1{background:rgba(91,130,118,.12);font-weight:700;color:var(--p)}
 .sim-eq.c2{background:rgba(91,130,118,.06);color:var(--p2)}
+.sim-eq.c3{background:rgba(255,209,0,.1);color:#8a6400;font-weight:700}
+.sim-eq-bloq{opacity:.4;cursor:not-allowed!important}
+.sim-t3-tag{font-size:.7rem;margin-left:auto}
 .sim-pos{width:13px;height:13px;font-size:.52rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--g1)}
-.sim-pos.s1{background:var(--p);color:#fff}.sim-pos.s2{background:var(--pl);color:var(--p)}
+.sim-pos.s1{background:var(--p);color:#fff}
+.sim-pos.s2{background:var(--pl);color:var(--p)}
+.sim-pos.s3{background:var(--ey);color:var(--k)}
 
 .sim-bracket-box{background:var(--w);border:1px solid var(--ln);padding:1rem}
 .sim-bracket-title{font-size:.6rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--g3);margin-bottom:.75rem}
@@ -550,7 +569,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--k);-webkit-
         </div>
       </div>
       <div class="bracket-scroll">
-        <div class="bracket-grid" id="bracket-grid"></div>
+        <div class="bracket-tree" id="bracket-grid"></div>
       </div>
     </div>
 
@@ -558,7 +577,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--k);-webkit-
     <div class="sec" id="s-simulador">
       <div class="sim-banner">
         <div class="sim-badge">🎮 Simulador</div>
-        <div class="sim-txt">Modo recreativo — <strong>no afecta tu puntaje ni el ranking oficial</strong>. Selecciona los clasificados de cada grupo y mira cómo quedarían los cruces de 16avos de final.</div>
+        <div class="sim-txt">Modo recreativo — <strong>no afecta tu puntaje ni el ranking oficial</strong>. Selecciona el 1°, 2° y hasta el 3° de cada grupo para ver los cruces de 16avos.</div>
+      </div>
+      <div class="sim-t3-info">
+        <div>
+          <p>🥉 <strong>Mejores terceros:</strong> En el Mundial 2026, los 8 mejores terceros de los 12 grupos también clasifican a 16avos. Selecciona los equipos que crees que pasarán como mejor tercero — máximo 8 en total.</p>
+        </div>
+        <div class="sim-t3-counter">
+          <span class="num" id="sim-t3-count">0</span>
+          <span class="lbl">/ 8 terceros</span>
+          <div class="sim-t3-progress"><div class="sim-t3-progress-bar" id="sim-t3-bar" style="width:0%"></div></div>
+        </div>
       </div>
       <div class="sh"><h2>Elige los clasificados por grupo</h2></div>
       <div class="sim-grupos" id="sim-grupos"></div>
@@ -683,7 +712,7 @@ function goTo(sec){
 // ── HELPERS ──────────────────────────────────────
 function flag(p){ const c=BANDERAS[p]; return c?`<img class="flag" src="https://flagcdn.com/w80/${c}.png" alt="${p}" onerror="this.style.opacity=.3"/>`:''; }
 function gflag(p){ const c=BANDERAS[p]; return c?`<img class="gf" src="https://flagcdn.com/w40/${c}.png" alt="${p}" onerror="this.style.display='none'"/>`:''; }
-function sflag(p){ const c=BANDERAS[p]; return c?`<img class="sim-eq-flag" style="width:14px;height:10px;object-fit:cover;border:1px solid var(--ln)" src="https://flagcdn.com/w40/${c}.png" alt="${p}" onerror="this.style.display='none'"/>`:''; }
+function sflag(p){ const c=BANDERAS[p]; return c?`<img style="width:14px;height:10px;object-fit:cover;border:1px solid var(--ln);vertical-align:middle" src="https://flagcdn.com/w40/${c}.png" alt="${p}" onerror="this.style.display='none'"/>`:''; }
 function hoy(){ return new Date().toISOString().split('T')[0]; }
 function estadoP(p){
   const r=resultados[p.id]; if(r&&r.finalizado) return 'fin';
@@ -964,11 +993,18 @@ function renderHoy(){
 // ── GRUPOS ────────────────────────────────────────
 function renderGrupos(){
   const tabsEl=document.getElementById('g-tabs');
-  const detEl=document.getElementById('g-detail');
   let tabsH='';
   Object.keys(GRUPOS).forEach(gk=>{
-    const tieneEcu=GRUPOS[gk].equipos.includes('Ecuador');
-    tabsH+=`<div class="gtab${tieneEcu?' ecu':''}${gk===grupoActivo?' on':''}" onclick="selectGrupo('${gk}')">${gk}${tieneEcu?' 🇪🇨':''}</div>`;
+    const g=GRUPOS[gk];
+    const tieneEcu=g.equipos.includes('Ecuador');
+    const flagsHTML=g.equipos.map(eq=>{
+      const c=BANDERAS[eq];
+      return c?`<img src="https://flagcdn.com/w40/${c}.png" alt="${eq}" onerror="this.style.display='none'"/>`:'';
+    }).join('');
+    tabsH+=`<div class="gtab${tieneEcu?' ecu':''}${gk===grupoActivo?' on':''}" onclick="selectGrupo('${gk}')">
+      <span>${gk}${tieneEcu?' 🇪🇨':''}</span>
+      <div class="gtab-flags">${flagsHTML}</div>
+    </div>`;
   });
   tabsEl.innerHTML=tabsH;
   renderGrupoDetail(grupoActivo);
@@ -1043,57 +1079,121 @@ function renderFaseFinal(){
   const inicio=new Date('2026-06-28T00:00:00-05:00'), ahora=new Date();
   const cdEl=document.getElementById('ff-cd');
   if(cdEl){ if(ahora<inicio){ const dias=Math.ceil((inicio-ahora)/(1000*60*60*24)); cdEl.textContent=`⏳ Faltan ${dias} días para que se definan los cruces`; } else cdEl.textContent='⚽ Los cruces ya están definidos'; }
-  const fases=[
-    {label:'16avos',n:8},{label:'Octavos',n:4},{label:'Cuartos',n:2},
-    {label:'Semifinales',n:1},{label:'Cuartos',n:2},{label:'Octavos',n:4},{label:'16avos',n:8}
-  ];
-  let h='';
-  fases.forEach((f,ci)=>{
-    const isFinal=ci===3;
-    if(isFinal){
-      h+=`<div class="b-final-col"><div class="b-final-title">🏆 Final</div><div class="b-trofeo">🏆</div>
-        <div class="b-match"><div class="b-pend">Por definir</div><div class="b-pend">Por definir</div></div>
-        <div style="margin-top:.75rem;font-size:.52rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--ey)">3er Lugar</div>
-        <div class="b-match" style="margin-top:.3rem"><div class="b-pend">Por definir</div><div class="b-pend">Por definir</div></div>
-      </div>`;
-    } else {
-      h+=`<div class="b-col"><div class="b-col-title">${f.label}</div>`;
-      for(let i=0;i<f.n;i++){
-        h+=`<div class="b-match"><div class="b-pend">Por definir</div><div class="b-pend">Por definir</div></div>`;
-      }
-      h+='</div>';
-    }
-  });
-  document.getElementById('bracket-grid').innerHTML=h;
+
+  function matchBox(n){
+    return `<div class="bt-match">
+      <div class="bt-pend">Por definir</div>
+      <div class="bt-pend">Por definir</div>
+    </div>`.repeat(n);
+  }
+
+  // Bracket: 16avos(8) → Octavos(4) → Cuartos(2) → Semis(1) | FINAL | Semis(1) → Cuartos(2) → Octavos(4) → 16avos(8)
+  const grid=document.getElementById('bracket-grid');
+  if(!grid) return;
+
+  grid.innerHTML=`
+    <div class="bt-col">
+      <div class="bt-col-title">16avos</div>
+      ${matchBox(8)}
+    </div>
+    <div class="bt-col">
+      <div class="bt-col-title">Octavos</div>
+      ${matchBox(4)}
+    </div>
+    <div class="bt-col">
+      <div class="bt-col-title">Cuartos</div>
+      ${matchBox(2)}
+    </div>
+    <div class="bt-col">
+      <div class="bt-col-title">Semifinal</div>
+      ${matchBox(1)}
+    </div>
+    <div class="bt-final">
+      <div class="bt-final-title">🏆 Final</div>
+      <div class="bt-trofeo">🏆</div>
+      <div class="bt-match">
+        <div class="bt-pend">Por definir</div>
+        <div class="bt-pend">Por definir</div>
+      </div>
+      <div class="bt-3rd-title">🥉 Tercer Lugar</div>
+      <div class="bt-match">
+        <div class="bt-pend">Por definir</div>
+        <div class="bt-pend">Por definir</div>
+      </div>
+    </div>
+    <div class="bt-col">
+      <div class="bt-col-title">Semifinal</div>
+      ${matchBox(1)}
+    </div>
+    <div class="bt-col">
+      <div class="bt-col-title">Cuartos</div>
+      ${matchBox(2)}
+    </div>
+    <div class="bt-col">
+      <div class="bt-col-title">Octavos</div>
+      ${matchBox(4)}
+    </div>
+    <div class="bt-col">
+      <div class="bt-col-title">16avos</div>
+      ${matchBox(8)}
+    </div>
+  `;
 }
 
 // ── SIMULADOR ─────────────────────────────────────
 function renderSimulador(){
+  // Contar terceros seleccionados
+  const totalTerceros=Object.keys(simClas).filter(gk=>simClas[gk]?.length>=3).length;
+  const tercerosFull=totalTerceros>=8;
+
   let h='';
   Object.keys(GRUPOS).forEach(gk=>{
     const g=GRUPOS[gk]; if(!simClas[gk]) simClas[gk]=[];
     h+=`<div class="sim-g"><div class="sim-g-head">${g.nombre}</div>`;
-    g.equipos.forEach(eq=>{
-      const pos=simClas[gk].indexOf(eq), cls=pos===0?' c1':pos===1?' c2':'';
-      const posBadge=pos===0?'1':pos===1?'2':'';
-      h+=`<div class="sim-eq${cls}" onclick="simToggle('${gk}','${eq}')">
-        <div class="sim-pos${pos===0?' s1':pos===1?' s2':''}">${posBadge}</div>
+    g.equipos.forEach((eq,i)=>{
+      const posActual=simClas[gk].indexOf(eq);
+      const esTercero=posActual===2;
+      const cls=posActual===0?' c1':posActual===1?' c2':posActual===2?' c3':'';
+      const posBadge=posActual===0?'1°':posActual===1?'2°':posActual===2?'3°':'';
+      // Deshabilitar terceros si ya hay 8 y este no está seleccionado
+      const bloqTercero=tercerosFull&&posActual===-1&&simClas[gk].length>=2;
+      h+=`<div class="sim-eq${cls}${bloqTercero?' sim-eq-bloq':''}" onclick="${bloqTercero?'':''}" ${bloqTercero?'':'onclick="simToggle(\''+gk+'\',\''+eq+'\')"'}>
+        <div class="sim-pos${posActual===0?' s1':posActual===1?' s2':posActual===2?' s3':''}">${posBadge}</div>
         ${sflag(eq)}<span>${eq}</span>
+        ${esTercero?'<span class="sim-t3-tag">🥉</span>':''}
       </div>`;
     });
     h+='</div>';
   });
   document.getElementById('sim-grupos').innerHTML=h;
+
+  // Contador de mejores terceros
+  const contEl=document.getElementById('sim-t3-count');
+  if(contEl) contEl.textContent=totalTerceros;
+  const contBarEl=document.getElementById('sim-t3-bar');
+  if(contBarEl) contBarEl.style.width=(totalTerceros/8*100)+'%';
+
   renderSim16();
 }
 function simToggle(gk,eq){
   const cl=simClas[gk]||[], idx=cl.indexOf(eq);
-  if(idx>=0) simClas[gk]=cl.filter(x=>x!==eq);
-  else if(cl.length<2) simClas[gk]=[...cl,eq];
+  const totalTerceros=Object.keys(simClas).filter(g=>simClas[g]?.length>=3).length;
+  if(idx>=0){
+    // Deseleccionar — quitar y reordenar
+    simClas[gk]=cl.filter(x=>x!==eq);
+  } else {
+    // Seleccionar — máximo 3 por grupo, máximo 8 terceros total
+    if(cl.length<2){
+      simClas[gk]=[...cl,eq];
+    } else if(cl.length===2){
+      // Intentar agregar tercero
+      if(totalTerceros<8) simClas[gk]=[...cl,eq];
+      else{ toast('Ya seleccionaste los 8 mejores terceros.','info'); return; }
+    }
+  }
   renderSimulador();
 }
 function renderSim16(){
-  // Cruces oficiales FIFA Mundial 2026 (48 equipos, 12 grupos)
   const cruces=[
     {id:'P1', a:{pos:1,g:'A'}, b:{pos:2,g:'C'}},
     {id:'P2', a:{pos:1,g:'B'}, b:{pos:2,g:'D'}},
@@ -1107,33 +1207,41 @@ function renderSim16(){
     {id:'P10',a:{pos:1,g:'J'}, b:{pos:2,g:'L'}},
     {id:'P11',a:{pos:1,g:'K'}, b:{pos:2,g:'I'}},
     {id:'P12',a:{pos:1,g:'L'}, b:{pos:2,g:'J'}},
-    {id:'P13',a:'MT3',b:'MT3'},
-    {id:'P14',a:'MT3',b:'MT3'},
-    {id:'P15',a:'MT3',b:'MT3'},
-    {id:'P16',a:'MT3',b:'MT3'},
   ];
 
+  // Recoger todos los terceros seleccionados
+  const terceros=[];
+  Object.keys(GRUPOS).forEach(gk=>{ if(simClas[gk]?.length>=3) terceros.push(simClas[gk][2]); });
+
   function getEq(side){
-    if(side==='MT3') return null;
-    const eq=simClas[side.g]?.[side.pos-1];
-    return eq||null;
+    return simClas[side.g]?.[side.pos-1]||null;
   }
-  function labelCruce(side){
-    if(side==='MT3') return {nombre:'Mejor 3°', flag:''};
-    const eq=getEq(side);
-    return eq?{nombre:eq,flag:sflag(eq)}:{nombre:`${side.pos}° Grupo ${side.g}`,flag:''};
+  function rowEq(eq, label){
+    if(eq) return `<div class="sim-c-eq">${sflag(eq)} ${eq}</div>`;
+    return `<div class="sim-c-eq tbd">${label}</div>`;
   }
 
   let h='';
+  // Partidos 1-12
   cruces.forEach((c,i)=>{
-    const la=labelCruce(c.a), lb=labelCruce(c.b);
-    const tieneEq=getEq(c.a)||getEq(c.b);
-    h+=`<div class="sim-cruce${tieneEq?' sim-cruce-filled':''}">
+    const eq1=getEq(c.a), eq2=getEq(c.b);
+    const filled=eq1||eq2;
+    h+=`<div class="sim-cruce${filled?' sim-cruce-filled':''}">
       <div class="sim-c-num">Partido ${i+1}</div>
-      <div class="sim-c-eq${!getEq(c.a)?' tbd':''}">${la.flag} ${la.nombre}</div>
-      <div class="sim-c-eq${!getEq(c.b)?' tbd':''}">${lb.flag} ${lb.nombre}</div>
+      ${rowEq(eq1,`1° Grupo ${c.a.g}`)}
+      ${rowEq(eq2,`2° Grupo ${c.b.g}`)}
     </div>`;
   });
+  // Partidos 13-16 — mejores terceros
+  for(let i=0;i<4;i++){
+    const eq1=terceros[i*2]||null, eq2=terceros[i*2+1]||null;
+    const filled=eq1||eq2;
+    h+=`<div class="sim-cruce${filled?' sim-cruce-filled':''}">
+      <div class="sim-c-num">Partido ${13+i} 🥉</div>
+      ${rowEq(eq1,'Mejor 3°')}
+      ${rowEq(eq2,'Mejor 3°')}
+    </div>`;
+  }
   document.getElementById('sim-16').innerHTML=h;
 }
 

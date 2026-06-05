@@ -779,10 +779,10 @@ function partidoCard(p){
     const rankL=ctx.ranking_local??'—', rankV=ctx.ranking_visitante??'—';
     const hype=ctx.hype||'';
     ctxHTML=`
-    <button class="ctx-btn" type="button" onclick="toggleCtx('${p.id}')">
-      <span>📖 Análisis del partido</span><span id="ctx-arr-${p.id}">▼</span>
+    <button class="ctx-btn" type="button" onclick="toggleCtx(this)">
+      <span>📖 Análisis del partido</span><span class="ctx-arr">▼</span>
     </button>
-    <div class="ctx-panel" id="ctx-${p.id}">
+    <div class="ctx-panel">
       <div class="ctx-contexto">
         <span style="font-weight:700;color:var(--k)">${p.local}:</span> ${datosL}<br/>
         <span style="font-weight:700;color:var(--k)">${p.visitante}:</span> ${datosV}
@@ -868,14 +868,14 @@ function partidoCard(p){
   </div>`;
 }
 
-function toggleCtx(pid){
-  // Find elements anywhere in the DOM — fixes cases where card re-renders
-  const b=document.getElementById('ctx-'+pid);
-  const a=document.getElementById('ctx-arr-'+pid);
-  if(!b) return;
-  const isOpen=b.classList.contains('open');
-  b.classList.toggle('open',!isOpen);
-  if(a) a.textContent=!isOpen?'▲':'▼';
+function toggleCtx(btn){
+  // Opera sobre el panel hermano del botón clickeado — así funciona aunque
+  // el mismo partido aparezca en varias pestañas (Inicio, Grupos, Calendario)
+  const panel=btn.nextElementSibling;
+  const arr=btn.querySelector('.ctx-arr');
+  if(!panel) return;
+  const isOpen=panel.classList.toggle('open');
+  if(arr) arr.textContent=isOpen?'▲':'▼';
 }
 
 // ── GUARDAR PRONÓSTICO ────────────────────────────

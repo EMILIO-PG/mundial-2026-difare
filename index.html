@@ -291,9 +291,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--k);-webkit-
 
 /* ── BRACKET VISUAL (sim + fase final) ─────────── */
 .bk-scroll{overflow-x:auto;padding-bottom:1rem;scrollbar-width:thin}
-.bk-tree{display:flex;align-items:stretch;justify-content:center;gap:.4rem;min-width:1180px}
-.bk-side{display:flex;gap:.4rem;flex:1}
-.bk-col{display:flex;flex-direction:column;justify-content:space-around;flex:1;min-width:118px;gap:.3rem}
+.bk-tree{display:flex;align-items:stretch;justify-content:center;gap:.3rem;min-width:1040px}
+.bk-side{display:flex;gap:.3rem;flex:1}
+.bk-col{display:flex;flex-direction:column;justify-content:space-around;flex:1;min-width:104px;gap:.3rem}
 .bk-col-t{font-size:.5rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--g3);text-align:center;padding:.32rem;background:var(--w);border:1px solid var(--ln);margin-bottom:.15rem}
 .bk-cell{flex:1;display:flex;flex-direction:column;justify-content:center}
 .bk-match{background:var(--w);border:1px solid var(--ln);overflow:hidden;transition:.15s}
@@ -301,18 +301,31 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--k);-webkit-
 .bk-team{display:flex;align-items:center;gap:.32rem;padding:.34rem .42rem;font-size:.62rem;font-weight:500;color:var(--k);cursor:pointer;border-bottom:1px solid var(--g1);transition:.12s;line-height:1.1}
 .bk-team:last-child{border-bottom:none}
 .bk-team:hover{background:var(--pl)}
-.bk-team.win{background:rgba(91,130,118,.16);font-weight:800;color:var(--p)}
+.bk-team.win{background:rgba(48,109,57,.16);font-weight:800;color:var(--p)}
 .bk-team.tbd{color:var(--g3);font-style:italic;cursor:default}
 .bk-team.tbd:hover{background:none}
 .bk-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bk-center{display:flex;flex-direction:column;justify-content:center;align-items:center;min-width:160px}
+.bk-center{display:flex;flex-direction:column;justify-content:center;align-items:center;min-width:150px}
 .bk-final-box{background:var(--k);padding:.85rem .65rem;display:flex;flex-direction:column;align-items:stretch;gap:.4rem;width:100%}
 .bk-final-t{font-size:.62rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--ey);text-align:center}
 .bk-final-box .bk-match{border-color:var(--ey)}
 .bk-champ{font-size:.66rem;font-weight:800;color:#fff;text-align:center;padding:.4rem;background:rgba(255,209,0,.12);border:1px dashed rgba(255,209,0,.4);letter-spacing:.5px;display:flex;align-items:center;justify-content:center;gap:.35rem;min-height:1.4rem}
 .bk-champ-flag{display:inline-flex}
 .bk-3rd-t{font-size:.5rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4);text-align:center;margin-top:.35rem}
-@media(max-width:700px){.bk-tree{min-width:1100px}}
+/* Vista móvil del bracket: pestañas de ronda + lista vertical */
+.bk-mobile{display:none}
+.bk-mob-tabs{display:flex;gap:2px;margin-bottom:.75rem;overflow-x:auto;scrollbar-width:none}
+.bk-mob-tabs::-webkit-scrollbar{display:none}
+.bk-mob-tab{flex:1;min-width:62px;padding:.5rem .3rem;background:var(--w);border:1px solid var(--ln);font-size:.56rem;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--g3);cursor:pointer;font-family:'Inter',sans-serif;transition:.12s;white-space:nowrap}
+.bk-mob-tab.on{background:var(--p);color:#fff;border-color:var(--p)}
+.bk-mob-round{display:flex;flex-direction:column;gap:.6rem}
+.bk-mob-round .bk-match{box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.bk-mob-round .bk-team{font-size:.78rem;padding:.6rem .65rem}
+.bk-mob-round .bk-final-box{gap:.5rem}
+@media(max-width:760px){
+  .bk-scroll{display:none}
+  .bk-mobile{display:block}
+}
 
 /* ── SIMULADOR ─────────────────────────────────── */
 .sim-banner{background:#1a1a1a;border:2px solid var(--ey);padding:.65rem 1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.65rem}
@@ -573,9 +586,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--k);-webkit-
           <span class="ff-lbl">pronósticos<br/>realizados</span>
         </div>
       </div>
-      <div class="bk-scroll">
-        <div class="bk-tree" id="bracket-grid"></div>
-      </div>
+      <div class="bk-wrap" id="bracket-grid"></div>
     </div>
 
     <!-- ══ SIMULADOR ══ -->
@@ -599,7 +610,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--k);-webkit-
       <div class="sim-bracket-box">
         <div class="sim-bracket-title">🏆 Bracket simulado — del 16avos a la final</div>
         <div class="sim-bracket-hint">Toca un equipo para hacerlo avanzar a la siguiente ronda. Vuelve a tocarlo para deshacer.</div>
-        <div class="bk-scroll"><div class="bk-tree" id="sim-16"></div></div>
+        <div class="bk-wrap" id="sim-16"></div>
       </div>
     </div>
 
@@ -623,6 +634,7 @@ const db = firebase.firestore();
 
 let CU=null, CUD=null, isAdmin=false, misP={}, resultados={}, simClas={};
 let simWin={}, ffWin={}; // ganadores elegidos en el bracket (sim / fase final): {matchId: nombreEquipo}
+let bkMobRound={sim:0, ff:0}; // ronda activa en la vista móvil del bracket
 let grupoActivo='A', calDiaActivo='';
 
 // ── AUTH ────────────────────────────────────────────
@@ -1051,16 +1063,40 @@ function renderGrupos(){
   renderGrupoDetail(grupoActivo);
 }
 function selectGrupo(gk){ grupoActivo=gk; renderGrupos(); }
+// Calcula la tabla de un grupo según los pronósticos del usuario (fútbol normal: 3/1/0)
+function computeGroupTable(gk){
+  const g=GRUPOS[gk];
+  const st={};
+  g.equipos.forEach(eq=>{ st[eq]={eq, j:0, g:0, e:0, p:0, gf:0, gc:0, pts:0}; });
+  PARTIDOS_GRUPOS.filter(p=>p.grupo===gk).forEach(p=>{
+    const pr=misP[p.id];
+    if(!pr||!pr.guardado||pr.local===undefined||pr.visitante===undefined) return;
+    const L=st[p.local], V=st[p.visitante];
+    if(!L||!V) return;
+    const gl=parseInt(pr.local), gv=parseInt(pr.visitante);
+    if(isNaN(gl)||isNaN(gv)) return;
+    L.j++; V.j++; L.gf+=gl; L.gc+=gv; V.gf+=gv; V.gc+=gl;
+    if(gl>gv){ L.g++; L.pts+=3; V.p++; }
+    else if(gv>gl){ V.g++; V.pts+=3; L.p++; }
+    else { L.e++; V.e++; L.pts++; V.pts++; }
+  });
+  const arr=Object.values(st).map(s=>({...s, gd:s.gf-s.gc}));
+  arr.sort((a,b)=> b.pts-a.pts || b.gd-a.gd || b.gf-a.gf || a.eq.localeCompare(b.eq));
+  return arr;
+}
+
 function renderGrupoDetail(gk){
   const g=GRUPOS[gk], parts=PARTIDOS_GRUPOS.filter(p=>p.grupo===gk);
   const detEl=document.getElementById('g-detail');
   let h=`<div class="sh" style="margin-top:1rem"><h2>${g.nombre}</h2></div>`;
   h+=`<div class="gtable"><div class="gt-h"><span>#</span><span>Selección</span><span>J</span><span>G</span><span>P</span><span>GD</span><span>Pts</span></div>`;
-  g.equipos.forEach((eq,i)=>{
-    const esEcu=eq==='Ecuador';
+  const tabla=computeGroupTable(gk);
+  tabla.forEach((t,i)=>{
+    const esEcu=t.eq==='Ecuador';
+    const gd=t.gd>0?`+${t.gd}`:t.gd;
     h+=`<div class="gt-r"><div class="posn p${i+1}">${i+1}</div>
-      <div class="gt-team">${gflag(eq)}<span${esEcu?' style="color:var(--eb);font-weight:700"':''}>${eq}${esEcu?' 🇪🇨':''}</span></div>
-      <span class="gnum">0</span><span class="gnum">0</span><span class="gnum">0</span><span class="gnum">0</span><span class="gnum b">0</span></div>`;
+      <div class="gt-team">${gflag(t.eq)}<span${esEcu?' style="color:var(--eb);font-weight:700"':''}>${t.eq}${esEcu?' 🇪🇨':''}</span></div>
+      <span class="gnum">${t.j}</span><span class="gnum">${t.g}</span><span class="gnum">${t.p}</span><span class="gnum">${gd}</span><span class="gnum b">${t.pts}</span></div>`;
   });
   h+='</div>';
   h+=`<div class="sh"><h2>Partidos</h2></div><div class="partidos-2col">`;
@@ -1266,29 +1302,60 @@ function renderBracket(containerId, mode){
   // 3er puesto = perdedores de las semis
   const loser=m=>{ const w=winnerOf(m); if(!w) return null; return w===m.a?m.b:m.a; };
   const tercer={id:'r3p', a:loser(rounds[3][0]), b:loser(rounds[3][1]), la:'Perdedor SF', lb:'Perdedor SF'};
+  const champHTML=`<div class="bk-champ">${win[final.id]?`<span class="bk-champ-flag">${sflag(win[final.id])}</span> ${win[final.id]}`:'Campeón por definir'}</div>`;
 
-  cont.innerHTML=`
-    <div class="bk-side">
-      ${bkCol(mode, r0.L, '16avos')}
-      ${bkCol(mode, r1.L, 'Octavos')}
-      ${bkCol(mode, r2.L, 'Cuartos')}
-      ${bkCol(mode, r3.L, 'Semifinal')}
-    </div>
-    <div class="bk-center">
-      <div class="bk-final-box">
+  // ── Vista ESCRITORIO: árbol de dos lados ──
+  const desktop=`
+    <div class="bk-scroll"><div class="bk-tree">
+      <div class="bk-side">
+        ${bkCol(mode, r0.L, '16avos')}
+        ${bkCol(mode, r1.L, 'Octavos')}
+        ${bkCol(mode, r2.L, 'Cuartos')}
+        ${bkCol(mode, r3.L, 'Semifinal')}
+      </div>
+      <div class="bk-center">
+        <div class="bk-final-box">
+          <div class="bk-final-t">🏆 Final</div>
+          ${bkMatch(mode, final)}
+          ${champHTML}
+          <div class="bk-3rd-t">🥉 Tercer puesto</div>
+          ${bkMatch(mode, tercer)}
+        </div>
+      </div>
+      <div class="bk-side bk-side-r">
+        ${bkCol(mode, r3.R, 'Semifinal')}
+        ${bkCol(mode, r2.R, 'Cuartos')}
+        ${bkCol(mode, r1.R, 'Octavos')}
+        ${bkCol(mode, r0.R, '16avos')}
+      </div>
+    </div></div>`;
+
+  // ── Vista MÓVIL: una ronda a la vez con pestañas ──
+  const mr=bkMobRound[mode]||0;
+  const tabs=ROUND_NAMES.map((n,i)=>`<button class="bk-mob-tab${i===mr?' on':''}" type="button" onclick="bkSetRound('${mode}',${i})">${n}</button>`).join('');
+  let mobBody='';
+  if(mr<4){
+    mobBody=rounds[mr].map(m=>bkMatch(mode,m)).join('');
+  }else{
+    mobBody=`<div class="bk-final-box">
         <div class="bk-final-t">🏆 Final</div>
         ${bkMatch(mode, final)}
-        <div class="bk-champ">${win[final.id]?`<span class="bk-champ-flag">${sflag(win[final.id])}</span> ${win[final.id]}`:'Campeón por definir'}</div>
+        ${champHTML}
         <div class="bk-3rd-t">🥉 Tercer puesto</div>
         ${bkMatch(mode, tercer)}
-      </div>
-    </div>
-    <div class="bk-side bk-side-r">
-      ${bkCol(mode, r3.R, 'Semifinal')}
-      ${bkCol(mode, r2.R, 'Cuartos')}
-      ${bkCol(mode, r1.R, 'Octavos')}
-      ${bkCol(mode, r0.R, '16avos')}
+      </div>`;
+  }
+  const mobile=`<div class="bk-mobile">
+      <div class="bk-mob-tabs">${tabs}</div>
+      <div class="bk-mob-round">${mobBody}</div>
     </div>`;
+
+  cont.innerHTML=desktop+mobile;
+}
+
+function bkSetRound(mode, idx){
+  bkMobRound[mode]=idx;
+  renderBracket(mode==='sim'?'sim-16':'bracket-grid', mode);
 }
 
 function pickWinner(mode, matchId, eq){

@@ -99,17 +99,27 @@ html,body{overflow-x:hidden;max-width:100%}
 /* ── PAGE ──────────────────────────────────────── */
 .page{max-width:1100px;margin:0 auto;padding:1.5rem}
 .sec{display:none;max-width:100%}.sec.on{display:block}
-/* ── MI RESUMEN (stats personales) ── */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,105px),1fr));gap:.5rem;margin-bottom:.5rem;width:0;min-width:100%}
-.st{background:var(--w);border:1px solid var(--ln);padding:.7rem .5rem;text-align:center;display:flex;flex-direction:column;gap:.25rem}
-.st-n{font-size:1.35rem;font-weight:900;line-height:1;color:var(--k)}
-.st-l{font-size:.52rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--g3);line-height:1.3}
-.st.ok .st-n{color:var(--p)}
-.st.mid .st-n{color:#7a93b8}
-.st.bad .st-n{color:var(--er)}
-.st.pts{background:var(--k);border-color:var(--k)}
-.st.pts .st-n{color:var(--ey)}
-.st.pts .st-l{color:rgba(255,255,255,.55)}
+/* ── CARNET DE JUGADOR (Mi Perfil) ── */
+.carnet{background:var(--w);border:1px solid var(--ln);max-width:420px;margin:0 auto}
+.cn-head{background:var(--k);padding:1rem;display:flex;align-items:center;gap:.8rem}
+.cn-av{width:46px;height:46px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.15rem;font-weight:800;flex-shrink:0}
+.cn-name{color:#fff;font-size:.92rem;font-weight:800;letter-spacing:.3px}
+.cn-sub{color:var(--ey);font-size:.68rem;font-weight:600;margin-top:.15rem}
+.cn-grid{display:grid;grid-template-columns:1fr 1fr}
+.cn-st{padding:.85rem .5rem;text-align:center;border-top:1px solid var(--ln);display:flex;flex-direction:column;gap:.2rem}
+.cn-st:nth-child(odd){border-right:1px solid var(--ln)}
+.cn-n{font-size:1.4rem;font-weight:900;line-height:1;color:var(--k)}
+.cn-n.ok{color:var(--p)}
+.cn-n.mid{color:#7a93b8}
+.cn-n.bad{color:var(--er)}
+.cn-l{font-size:.52rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--g3)}
+.cn-foot{padding:.65rem;background:var(--bg);border-top:1px solid var(--ln);font-size:.68rem;color:var(--g4);text-align:center}
+.cn-foot strong{color:var(--k);font-weight:900}
+/* Modal perfil ajeno */
+.pf-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:center;justify-content:center;padding:1rem}
+.pf-overlay.show{display:flex}
+.pf-modal{position:relative;width:100%;max-width:420px}
+.pf-close{position:absolute;top:-32px;right:0;color:#fff;font-size:1.1rem;cursor:pointer;font-weight:700;padding:.25rem .5rem}
 .sh{display:flex;align-items:baseline;justify-content:space-between;padding-bottom:.5rem;border-bottom:2px solid var(--k);margin-bottom:1rem}
 .sh h2{font-size:.7rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
 .sh a{font-size:.6rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--p);text-decoration:none;cursor:pointer}
@@ -159,7 +169,7 @@ html,body{overflow-x:hidden;max-width:100%}
 /* ── PARTIDO CARDS ──────────────────────────────
    auto-fit por CONTENEDOR: 1 columna si es angosto, 2 si es ancho.
    No depende del ancho de pantalla → funciona en cualquier móvil. */
-.partidos-2col{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:0;width:0;min-width:100%;max-width:100%}
+.partidos-2col{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:0;width:100%;max-width:100%}
 .partidos-2col>*{min-width:0;max-width:100%}
 /* Cards de partido en GRUPOS: con aire entre ellas, no pegadas */
 #g-detail .partidos-2col{gap:.85rem}
@@ -249,7 +259,7 @@ html,body{overflow-x:hidden;max-width:100%}
 .cal-arrow{position:absolute;top:50%;transform:translateY(-50%);background:var(--w);border:1px solid var(--ln);width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;z-index:10;transition:.15s;user-select:none}
 .cal-arrow:hover{background:var(--g1)}
 .cal-arrow.left{left:0}.cal-arrow.right{right:0}
-.cal-dias{overflow-x:auto;scrollbar-width:none;padding:0 32px;display:flex;gap:.4rem;scroll-behavior:smooth;width:0;min-width:100%;-webkit-overflow-scrolling:touch}
+.cal-dias{overflow-x:auto;scrollbar-width:none;padding:0 32px;display:flex;gap:.4rem;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
 .cal-dias::-webkit-scrollbar{display:none}
 .cal-dia{flex:none;padding:.5rem .75rem;background:var(--w);border:1px solid var(--ln);cursor:pointer;text-align:center;transition:.15s;min-width:58px}
 .cal-dia:hover{background:var(--g1)}
@@ -394,7 +404,7 @@ html,body{overflow-x:hidden;max-width:100%}
 .sim-bracket-hint{font-size:.66rem;color:var(--g3);margin-bottom:.85rem;line-height:1.4}
 
 /* inicio partidos - full width 2 cols */
-#inicio-parts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:0;width:0;min-width:100%;max-width:100%}
+#inicio-parts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:0;width:100%;max-width:100%}
 #inicio-parts>*{min-width:0;max-width:100%}
 #inicio-parts .pc{margin-right:-1px;margin-bottom:-1px}
 @media(max-width:768px){#inicio-parts{grid-template-columns:1fr}}
@@ -495,6 +505,7 @@ html,body{overflow-x:hidden;max-width:100%}
         <div class="nl" onclick="goTo('fasefinal')">Fase Final</div>
         <div class="nl" onclick="goTo('simulador')">Simulador</div>
         <div class="nl" onclick="goTo('ranking')">Ranking</div>
+        <div class="nl" onclick="goTo('perfil')">Mi Perfil</div>
       </div>
     </div>
     <div class="tr">
@@ -512,6 +523,7 @@ html,body{overflow-x:hidden;max-width:100%}
     <div class="nm" onclick="goTo('fasefinal')">🏆 Fase Final</div>
     <div class="nm" onclick="goTo('simulador')">🎮 Simulador</div>
     <div class="nm" onclick="goTo('ranking')">🏅 Ranking</div>
+    <div class="nm" onclick="goTo('perfil')">👤 Mi Perfil</div>
   </div>
 
   <div class="hero" id="hero-section">
@@ -589,7 +601,6 @@ html,body{overflow-x:hidden;max-width:100%}
             </div>
           </div>
 
-          <div id="inicio-stats"></div>
           <div class="sh" style="margin-top:1.25rem"><h2>Próximos partidos</h2><a onclick="goTo('hoy')">Ver hoy →</a></div>
           <div id="inicio-parts"></div>
         </div>
@@ -678,6 +689,20 @@ html,body{overflow-x:hidden;max-width:100%}
       <div id="ranking-content"></div>
     </div>
 
+    <!-- ══ MI PERFIL ══ -->
+    <div class="sec" id="s-perfil">
+      <div class="sh"><h2>Mi Perfil</h2></div>
+      <div id="perfil-content"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal para ver el perfil de otro jugador -->
+<div class="pf-overlay" id="pf-overlay" onclick="if(event.target===this)cerrarPerfil()">
+  <div class="pf-modal">
+    <div class="pf-close" onclick="cerrarPerfil()">✕</div>
+    <div id="pf-modal-content"></div>
   </div>
 </div>
 
@@ -803,10 +828,11 @@ function goTo(sec){
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
   document.querySelectorAll('.nl,.nm').forEach(n=>n.classList.remove('on'));
   document.getElementById('s-'+sec).classList.add('on');
-  const idx={inicio:0,hoy:1,grupos:2,calendario:3,fasefinal:4,simulador:5,ranking:6}[sec];
+  const idx={inicio:0,hoy:1,grupos:2,calendario:3,fasefinal:4,simulador:5,ranking:6,perfil:7}[sec];
   document.querySelectorAll('.nl')[idx]?.classList.add('on');
   document.querySelectorAll('.nm')[idx]?.classList.add('on');
   if(sec==='ranking') renderRanking();
+  if(sec==='perfil') renderPerfil();
   // Scroll al contenido
   setTimeout(()=>{ document.getElementById('page-content').scrollIntoView({behavior:'smooth',block:'start'}); },50);
 }
@@ -1122,7 +1148,7 @@ async function calcPtsTodos(pid){
         else if(ex)pts=PUNTOS.MARCADOR_EXACTO;else pts=PUNTOS.RESULTADO_CORRECTO;
       }
       // Guardar los puntos DENTRO del propio pronóstico (idempotente: sobrescribe, no suma)
-      batch.set(pref,{pts:pts,acierto:pts>0},{merge:true});
+      batch.set(pref,{pts:pts,acierto:pts>0,tipo:(pts>0&&ex)?'exacto':(pts>0?'resultado':'fallo')},{merge:true});
     }
     await batch.commit();
     // Recalcular el TOTAL de cada usuario sumando todos sus pronósticos puntuados
@@ -1139,9 +1165,13 @@ async function recalcularTotales(users){
     for(const ud of users.docs){
       const uid=ud.id;
       const parts=await db.collection('pronosticos').doc(uid).collection('partidos').get();
-      let puntos=0, aciertos=0;
-      parts.forEach(d=>{ const x=d.data(); puntos+=(x.pts||0); if(x.acierto) aciertos++; });
-      batch.update(db.collection('usuarios').doc(uid),{puntos:puntos,aciertos:aciertos});
+      let puntos=0, aciertos=0, ex=0, co=0, fa=0, he=0;
+      parts.forEach(d=>{ const x=d.data();
+        if(x.local!==undefined&&x.visitante!==undefined) he++;
+        puntos+=(x.pts||0); if(x.acierto) aciertos++;
+        if(x.tipo==='exacto') ex++; else if(x.tipo==='resultado') co++; else if(x.tipo==='fallo') fa++;
+      });
+      batch.update(db.collection('usuarios').doc(uid),{puntos:puntos,aciertos:aciertos,stExactos:ex,stCorrectos:co,stFallas:fa,stHechos:he});
     }
     await batch.commit();
   }catch(e){console.error('Error recalc totales:',e);}
@@ -1152,38 +1182,79 @@ function renderInicio(){
   const prox=PARTIDOS_GRUPOS.filter(p=>estadoP(p)==='hoy'||estadoP(p)==='futuro').slice(0,4);
   const el=document.getElementById('inicio-parts');
   el.innerHTML=prox.length?prox.map(p=>partidoCard(p)).join(''):'<p style="color:var(--g3);font-size:.75rem;padding:.5rem">No hay partidos próximos.</p>';
-  renderMisStats();
   renderInicioRank();
 }
 
-// ── MIS ESTADÍSTICAS: compara mis pronósticos vs resultados oficiales ──
-function renderMisStats(){
-  const el=document.getElementById('inicio-stats');
-  if(!el) return;
-  let hechos=0, exactos=0, soloRes=0, fallas=0;
+// ── CARNET DE JUGADOR (Mi Perfil + perfiles ajenos) ──
+function carnetHTML(o){
+  // o: {nombre, puntos, puesto, total, exactos, correctos, fallas, hechos}
+  const evaluados=o.exactos+o.correctos+o.fallas;
+  const pct=evaluados?Math.round(((o.exactos+o.correctos)/evaluados)*100):0;
+  return `<div class="carnet">
+    <div class="cn-head">
+      <div class="cn-av">${(o.nombre||'?').charAt(0).toUpperCase()}</div>
+      <div>
+        <div class="cn-name">${o.nombre||'Jugador'}</div>
+        <div class="cn-sub">${o.puntos||0} pts${o.puesto?` · puesto ${o.puesto} de ${o.total}`:''}</div>
+      </div>
+    </div>
+    <div class="cn-grid">
+      <div class="cn-st"><span class="cn-n ok">${o.exactos}</span><span class="cn-l">Marcador exacto 🎯</span></div>
+      <div class="cn-st"><span class="cn-n mid">${o.correctos}</span><span class="cn-l">Resultado correcto ✓</span></div>
+      <div class="cn-st"><span class="cn-n bad">${o.fallas}</span><span class="cn-l">Fallas ✗</span></div>
+      <div class="cn-st"><span class="cn-n">${pct}%</span><span class="cn-l">Efectividad (${evaluados} eval.)</span></div>
+    </div>
+    <div class="cn-foot">⚽ <strong>${o.hechos}</strong> pronósticos realizados</div>
+  </div>`;
+}
+
+// Calcula MIS stats en vivo (mis pronósticos vs resultados oficiales)
+function misStatsLive(){
+  let hechos=0, exactos=0, correctos=0, fallas=0;
   PARTIDOS_GRUPOS.forEach(p=>{
     const pr=misP[p.id];
     if(!pr||pr.local===undefined||pr.visitante===undefined) return;
     hechos++;
     const res=resultados[p.id];
-    if(!res||!res.finalizado) return; // aún sin resultado oficial
+    if(!res||!res.finalizado) return;
     const pl=parseInt(pr.local), pv=parseInt(pr.visitante);
     if(pl===res.local&&pv===res.visitante){exactos++;return;}
-    const okSigno=(res.local>res.visitante&&pl>pv)||(res.visitante>res.local&&pv>pl)||(res.local===res.visitante&&pl===pv);
-    if(okSigno) soloRes++; else fallas++;
+    const ok=(res.local>res.visitante&&pl>pv)||(res.visitante>res.local&&pv>pl)||(res.local===res.visitante&&pl===pv);
+    if(ok) correctos++; else fallas++;
   });
-  const evaluados=exactos+soloRes+fallas;
-  const pct=evaluados?Math.round(((exactos+soloRes)/evaluados)*100):0;
-  el.innerHTML=`
-    <div class="sh"><h2>Mi resumen</h2></div>
-    <div class="stats-grid">
-      <div class="st"><span class="st-n">${hechos}</span><span class="st-l">Pronósticos<br/>realizados</span></div>
-      <div class="st ok"><span class="st-n">${exactos}</span><span class="st-l">Marcador<br/>exacto 🎯</span></div>
-      <div class="st mid"><span class="st-n">${soloRes}</span><span class="st-l">Resultado<br/>correcto ✓</span></div>
-      <div class="st bad"><span class="st-n">${fallas}</span><span class="st-l">Fallas ✗</span></div>
-      <div class="st pts"><span class="st-n">${pct}%</span><span class="st-l">Efectividad<br/>(${evaluados} evaluados)</span></div>
-    </div>`;
+  return {hechos, exactos, correctos, fallas};
 }
+
+async function renderPerfil(){
+  const el=document.getElementById('perfil-content');
+  if(!el) return;
+  el.innerHTML='<p style="color:var(--g3);font-size:.75rem">Cargando...</p>';
+  const st=misStatsLive();
+  let puesto=null, total=null;
+  try{
+    const snap=await db.collection('usuarios').orderBy('puntos','desc').get();
+    total=snap.size; let pos=1;
+    snap.forEach(d=>{ if(d.id===CU.uid) puesto=pos; pos++; });
+  }catch(e){}
+  el.innerHTML=carnetHTML({nombre:CUD?.nombre||CU.email.split('@')[0], puntos:CUD?.puntos||0, puesto, total, ...st});
+}
+
+// Ver el perfil de OTRO jugador (solo números agregados, nunca sus pronósticos)
+async function verPerfil(uid){
+  if(uid===CU.uid){goTo('perfil');return;}
+  const ov=document.getElementById('pf-overlay'), mc=document.getElementById('pf-modal-content');
+  mc.innerHTML='<p style="color:var(--g3);font-size:.75rem;padding:1rem">Cargando...</p>';
+  ov.classList.add('show');
+  try{
+    const snap=await db.collection('usuarios').orderBy('puntos','desc').get();
+    let puesto=null, total=snap.size, pos=1, u=null;
+    snap.forEach(d=>{ if(d.id===uid){puesto=pos;u=d.data();} pos++; });
+    if(!u){mc.innerHTML='<p style="color:var(--er);font-size:.75rem;padding:1rem">Jugador no encontrado.</p>';return;}
+    mc.innerHTML=carnetHTML({nombre:u.nombre||u.email, puntos:u.puntos||0, puesto, total,
+      exactos:u.stExactos||0, correctos:u.stCorrectos||0, fallas:u.stFallas||0, hechos:u.stHechos||0});
+  }catch(e){mc.innerHTML='<p style="color:var(--er);font-size:.75rem;padding:1rem">Error al cargar el perfil.</p>';}
+}
+function cerrarPerfil(){document.getElementById('pf-overlay').classList.remove('show');}
 
 async function renderInicioRank(){
   const el=document.getElementById('inicio-rank');
@@ -1194,7 +1265,7 @@ async function renderInicioRank(){
     let pos=1;
     snap.forEach(d=>{
       const u=d.data(), me=d.id===CU.uid;
-      h+=`<div class="rrow${me?' me':''}"><span class="rpos">${pos===1?'🥇':pos===2?'🥈':pos===3?'🥉':pos}</span>
+      h+=`<div class="rrow${me?' me':''}" onclick="verPerfil('${d.id}')" style="cursor:pointer"><span class="rpos">${pos===1?'🥇':pos===2?'🥈':pos===3?'🥉':pos}</span>
         <div class="rav${me?' p':''}">${(u.nombre||'?').charAt(0).toUpperCase()}</div>
         <div style="flex:1"><div class="rname">${u.nombre||u.email}${me?'<span class="rme-tag">(tú)</span>':''}</div><div class="rsub">${u.aciertos||0} aciertos</div></div>
         <span class="rpts">${u.puntos||0}</span></div>`;
@@ -1309,7 +1380,7 @@ function renderCalendario(){
   // Scroll al día activo
   setTimeout(()=>{
     const el=diasEl.querySelector('.on');
-    if(el) el.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    if(el){const c=document.getElementById('cal-dias'); if(c) c.scrollLeft=el.offsetLeft-(c.clientWidth/2)+(el.offsetWidth/2);}
   },100);
 }
 function selectDia(f){
@@ -1570,7 +1641,7 @@ async function renderRanking(){
     let pos=1;
     snap.forEach(d=>{
       const u=d.data(), me=d.id===CU.uid;
-      h+=`<div class="rrow${me?' me':''}"><span class="rpos">${pos===1?'🥇':pos===2?'🥈':pos===3?'🥉':pos}</span>
+      h+=`<div class="rrow${me?' me':''}" onclick="verPerfil('${d.id}')" style="cursor:pointer"><span class="rpos">${pos===1?'🥇':pos===2?'🥈':pos===3?'🥉':pos}</span>
         <div class="rav${me?' p':''}">${(u.nombre||'?').charAt(0).toUpperCase()}</div>
         <div style="flex:1"><div class="rname">${u.nombre||u.email}${me?'<span class="rme-tag">(tú)</span>':''}</div><div class="rsub">${u.aciertos||0} aciertos</div></div>
         <span class="rpts">${u.puntos||0}</span></div>`;
@@ -1587,6 +1658,6 @@ function toast(msg,type='ok'){
   clearTimeout(window._tt); window._tt=setTimeout(()=>t.classList.remove('show'),3500);
 }
 </script>
-<div style="text-align:center;padding:.5rem;font-size:.55rem;color:#bbb;letter-spacing:1px">v2.3</div>
+<div style="text-align:center;padding:.5rem;font-size:.55rem;color:#bbb;letter-spacing:1px">v2.6</div>
 </body>
 </html>

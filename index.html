@@ -766,12 +766,20 @@ function ahoraReal(){
   return new Date(SERVER_NOW.getTime()+(Date.now()-SERVER_NOW_LOADED_AT));
 }
 async function loadServerTime(){
+  // Escritura y lectura separadas: si la escritura falla (reglas, red),
+  // igual intentamos leer el último timestamp disponible en lugar de bloquear todo.
   try{
     await db.collection('_clock').doc('now').set({t:firebase.firestore.FieldValue.serverTimestamp()});
+  }catch(e){ console.warn('_clock write:',e?.code||e); }
+  try{
     const doc=await db.collection('_clock').doc('now').get();
-    SERVER_NOW=doc.data().t.toDate();
-    SERVER_NOW_LOADED_AT=Date.now();
-  }catch(e){ SERVER_NOW=null; SERVER_NOW_LOADED_AT=null; }
+    if(doc.exists&&doc.data().t){
+      SERVER_NOW=doc.data().t.toDate();
+      SERVER_NOW_LOADED_AT=Date.now();
+      return;
+    }
+    SERVER_NOW=null; SERVER_NOW_LOADED_AT=null;
+  }catch(e){ console.warn('_clock read:',e?.code||e); SERVER_NOW=null; SERVER_NOW_LOADED_AT=null; }
 }
 
 // ── AUTH ────────────────────────────────────────────
@@ -839,8 +847,26 @@ async function initApp(){
   initSlider();
   await Promise.all([loadServerTime(), loadResultados(), loadMisP(), loadFFBracket()]);
   actualizarMiContador(); // backfill: deja mi contador al día apenas entro
+  if(isAdmin) seedPartidos(); // garantiza que partidos/{pid}.limite exista (lo exigen las reglas)
   updateTopPts();
   renderInicio(); renderHoy(); renderGrupos(); renderCalendario(); renderFaseFinal(); renderSimulador();
+}
+// Crea/actualiza partidos/{pid} con su hora límite.
+// Las reglas de Firestore exigen partidos/{pid}.limite para permitir guardar
+// pronósticos — si estos docs no existen, NADIE puede guardar. Es idempotente.
+async function seedPartidos(){
+  if(!isAdmin) return;
+  try{
+    const batch=db.batch();
+    PARTIDOS_GRUPOS.forEach(p=>{
+      const dt=new Date(p.fecha+'T'+p.hora+':00-05:00');
+      batch.set(db.collection('partidos').doc(p.id),
+        {limite:firebase.firestore.Timestamp.fromDate(dt),local:p.local,visitante:p.visitante,fecha:p.fecha,hora:p.hora},
+        {merge:true});
+    });
+    await batch.commit();
+    console.log('✓ partidos/{pid}.limite sembrados:',PARTIDOS_GRUPOS.length);
+  }catch(e){console.error('seedPartidos:',e);}
 }
 async function loadResultados(){
   try{ const s=await db.collection('resultados').get(); s.forEach(d=>resultados[d.id]=d.data()); }catch(e){}
@@ -885,14 +911,15 @@ function goTo(sec){
 function flag(p){ const c=BANDERAS[p]; return c?`<img class="flag" src="https://flagcdn.com/w80/${c}.png" alt="${p}" onerror="this.style.opacity=.3"/>`:''; }
 function gflag(p){ const c=BANDERAS[p]; return c?`<img class="gf" src="https://flagcdn.com/w40/${c}.png" alt="${p}" onerror="this.style.display='none'"/>`:''; }
 function sflag(p){ const c=BANDERAS[p]; return c?`<img style="width:14px;height:10px;object-fit:cover;border:1px solid var(--ln);vertical-align:middle" src="https://flagcdn.com/w40/${c}.png" alt="${p}" onerror="this.style.display='none'"/>`:''; }
-function hoy(){ const ahora=ahoraReal(); if(!ahora) return '9999-12-31'; return ahora.toISOString().split('T')[0]; }
+function fechaECU(d){ return new Date(d.getTime()-5*60*60*1000).toISOString().split('T')[0]; }
+function hoy(){ const ahora=ahoraReal(); if(!ahora) return '9999-12-31'; return fechaECU(ahora); }
 function estadoP(p){
   const r=resultados[p.id]; if(r&&r.finalizado) return 'fin';
   const ahora=ahoraReal();
   if(!ahora) return 'fin'; // sin hora del servidor → bloquear por seguridad
   const dt=new Date(p.fecha+'T'+p.hora+':00-05:00');
   if(dt<=ahora) return 'pasado';
-  if(p.fecha===ahora.toISOString().split('T')[0]) return 'hoy';
+  if(p.fecha===fechaECU(ahora)) return 'hoy';
   return 'futuro';
 }
 function calcPts(pid,local,vis){
@@ -1754,6 +1781,6 @@ setInterval(() => {
   }
 }, 30000);
 </script>
-<div style="text-align:center;padding:.5rem;font-size:.55rem;color:#bbb;letter-spacing:1px">v2.7</div>
+<div style="text-align:center;padding:.5rem;font-size:.55rem;color:#bbb;letter-spacing:1px">v2.8</div>
 </body>
 </html>

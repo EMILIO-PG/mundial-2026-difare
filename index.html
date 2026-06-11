@@ -1030,11 +1030,19 @@ function toggleCtx(btn){
 
 // ── GUARDAR PRONÓSTICO ────────────────────────────
 async function guardar(btn,pid,local,vis){
-  // Doble validación: aunque la página esté abierta desde antes, verificar la hora AHORA
+  // Validación con hora del SERVIDOR de Firestore — inmune a cambios de hora en el laptop
   const part=PARTIDOS_GRUPOS.find(x=>x.id===pid);
   if(part){
     const dt=new Date(part.fecha+'T'+part.hora+':00-05:00');
-    if(dt<=new Date()){toast('🔒 El partido ya comenzó. Pronóstico cerrado.','err');renderHoy();renderGrupos();renderCalendario();return;}
+    try{
+      await db.collection('_clock').doc('now').set({t:firebase.firestore.FieldValue.serverTimestamp()});
+      const clockDoc=await db.collection('_clock').doc('now').get();
+      const serverNow=clockDoc.data().t.toDate();
+      if(dt<=serverNow){toast('🔒 El partido ya comenzó. Pronóstico cerrado.','err');renderHoy();renderGrupos();renderCalendario();return;}
+    }catch(e){
+      // Fallback: si falla la consulta al servidor, usar hora local
+      if(dt<=new Date()){toast('🔒 El partido ya comenzó. Pronóstico cerrado.','err');renderHoy();renderGrupos();renderCalendario();return;}
+    }
   }
   // Lee los inputs DENTRO de la card del botón clickeado — así funciona aunque
   // el mismo partido aparezca en Inicio, Grupos, Calendario y Hoy a la vez

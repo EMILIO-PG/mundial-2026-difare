@@ -1711,6 +1711,20 @@ function toast(msg,type='ok'){
   t.textContent=msg; t.className=`toast show ${type}`;
   clearTimeout(window._tt); window._tt=setTimeout(()=>t.classList.remove('show'),3500);
 }
+
+// ── AUTO-BLOQUEO ───────────────────────────────────
+// Re-renderiza cada 30s para cerrar pronósticos de partidos que ya comenzaron.
+// Doble protección: visual (inputs disabled) + lógica (validación en guardar()).
+setInterval(() => {
+  const ahora = new Date();
+  const hayQueActualizar = PARTIDOS_GRUPOS.some(p => {
+    const dt = new Date(p.fecha + 'T' + p.hora + ':00-05:00');
+    return dt <= ahora && dt > new Date(ahora - 35000);
+  });
+  if (hayQueActualizar) {
+    renderHoy(); renderGrupos(); renderCalendario(); renderInicio();
+  }
+}, 30000);
 </script>
 <div style="text-align:center;padding:.5rem;font-size:.55rem;color:#bbb;letter-spacing:1px">v2.7</div>
 </body>

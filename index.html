@@ -430,6 +430,11 @@ html,body{overflow-x:hidden;max-width:100%}
   .fg input{font-size:16px}
   .ai{font-size:16px;width:46px}
   .pi{font-size:1.4rem}
+  /* Refuerzo: las cards de partido SIEMPRE a 1 columna y contenidas (calendario incluido) */
+  .partidos-2col{grid-template-columns:1fr !important;width:100%;max-width:100%}
+  .partidos-2col .pc{width:100%;max-width:100%}
+  #cal-content{width:100%;max-width:100%;overflow:hidden}
+  .cal-wrap{max-width:100%;overflow:hidden}
 }
 </style>
 </head>
@@ -1000,12 +1005,10 @@ async function guardarRes(pid){
 // ── API football-data.org ─────────────────────────
 async function buscarResultadoAPI(pid, localNom, visNom){
   toast('Buscando resultado en la API...','info');
+  let data;
+  try{ data=await apiFetchMatches(); }
+  catch(e){ console.error('API:',e); toast(apiErrMsg(e),'err'); return; }
   try{
-    const res=await fetch(`https://api.football-data.org/v4/competitions/${WC2026_ID}/matches`,{
-      headers:{'X-Auth-Token':API_KEY}
-    });
-    if(!res.ok){toast('Error de API: '+res.status,'err');return;}
-    const data=await res.json();
     const an=apiName(localNom), bn=apiName(visNom);
     if(!an||!bn){toast('Equipo no mapeado en el diccionario API.','err');return;}
     const match=data.matches?.find(m=>m.homeTeam?.name===an && m.awayTeam?.name===bn);
@@ -1017,19 +1020,47 @@ async function buscarResultadoAPI(pid, localNom, visNom){
     const adl=document.getElementById('adl-'+pid), adv=document.getElementById('adv-'+pid);
     if(adl) adl.value=s.home; if(adv) adv.value=s.away;
     toast(`API: ${localNom} ${s.home} - ${s.away} ${visNom}. Revisa y guarda.`,'ok');
-  }catch(e){toast('Error de conexión con la API.','err');}
+  }catch(e){toast('Error procesando los datos de la API.','err');}
+}
+
+// Llamada a la API con fallback: si el navegador bloquea (CORS), reintenta vía proxy
+async function apiFetchMatches(){
+  const url=`https://api.football-data.org/v4/competitions/${WC2026_ID}/matches`;
+  // Intento 1: directo
+  try{
+    const r=await fetch(url,{headers:{'X-Auth-Token':API_KEY}});
+    if(r.ok) return await r.json();
+    if(r.status===429) throw {tipo:'limite'};
+    if(r.status===403) throw {tipo:'token'};
+    throw {tipo:'http', code:r.status};
+  }catch(e){
+    if(e&&e.tipo) throw e; // error HTTP claro, no reintentar
+    // Falla de red/CORS → Intento 2: vía proxy
+    try{
+      const r2=await fetch('https://corsproxy.io/?url='+encodeURIComponent(url),{headers:{'X-Auth-Token':API_KEY}});
+      if(r2.ok) return await r2.json();
+      throw {tipo:'http', code:r2.status};
+    }catch(e2){
+      if(e2&&e2.tipo) throw e2;
+      throw {tipo:'red'};
+    }
+  }
+}
+function apiErrMsg(e){
+  if(e?.tipo==='limite') return 'Límite de llamadas de la API alcanzado (10/min). Espera 1 minuto y reintenta.';
+  if(e?.tipo==='token') return 'La API rechazó el token (403). Verifica tu token en football-data.org.';
+  if(e?.tipo==='http') return 'La API respondió con error '+e.code+'.';
+  return 'El navegador bloqueó la conexión con la API (CORS/red). Reintenta o avísame.';
 }
 
 // ── SINCRONIZAR TODOS LOS RESULTADOS (1 llamada, solo FINISHED, con confirmación) ──
 async function sincronizarResultados(){
   if(!isAdmin){toast('Solo el admin puede sincronizar.','err');return;}
   toast('Consultando la API...','info');
+  let data;
+  try{ data=await apiFetchMatches(); }
+  catch(e){ console.error('Sync API:',e); toast(apiErrMsg(e),'err'); return; }
   try{
-    const res=await fetch(`https://api.football-data.org/v4/competitions/${WC2026_ID}/matches`,{
-      headers:{'X-Auth-Token':API_KEY}
-    });
-    if(!res.ok){toast('Error de API: '+res.status,'err');return;}
-    const data=await res.json();
     const fin=(data.matches||[]).filter(m=>m.status==='FINISHED'&&m.score?.fullTime&&m.score.fullTime.home!==null);
     // Emparejar SOLO partidos de la app que aún no tienen resultado guardado
     const nuevos=[];
@@ -1040,7 +1071,7 @@ async function sincronizarResultados(){
       const m=fin.find(x=>x.homeTeam?.name===an&&x.awayTeam?.name===bn);
       if(m) nuevos.push({p, home:m.score.fullTime.home, away:m.score.fullTime.away});
     });
-    if(!nuevos.length){toast('No hay partidos finalizados nuevos. Todo al día. ✅','ok');return;}
+    if(!nuevos.length){toast('Conexión OK ✅ — no hay partidos finalizados nuevos.','ok');return;}
     // Mostrar lista para que el admin confirme antes de guardar
     const lista=nuevos.map(x=>`• ${x.p.local} ${x.home} - ${x.away} ${x.p.visitante}`).join('\n');
     if(!confirm(`La API trae ${nuevos.length} resultado(s) finalizado(s):\n\n${lista}\n\n¿Confirmar y guardar TODOS? (Se repartirán los puntos)`)) return;
@@ -1053,7 +1084,7 @@ async function sincronizarResultados(){
     }
     toast(`${nuevos.length} resultado(s) guardado(s) y puntos repartidos. ✅`,'ok');
     updateTopPts(); renderInicio(); renderHoy(); renderGrupos(); renderCalendario(); renderRanking&&renderRanking();
-  }catch(e){console.error(e);toast('Error de conexión con la API.','err');}
+  }catch(e){console.error(e);toast('Error procesando los datos de la API.','err');}
 }
 
 async function calcPtsTodos(pid){

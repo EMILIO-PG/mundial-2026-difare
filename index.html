@@ -98,7 +98,18 @@ html,body{overflow-x:hidden;max-width:100%}
 
 /* ── PAGE ──────────────────────────────────────── */
 .page{max-width:1100px;margin:0 auto;padding:1.5rem}
-.sec{display:none}.sec.on{display:block}
+.sec{display:none;max-width:100%}.sec.on{display:block}
+/* ── MI RESUMEN (stats personales) ── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,105px),1fr));gap:.5rem;margin-bottom:.5rem;width:0;min-width:100%}
+.st{background:var(--w);border:1px solid var(--ln);padding:.7rem .5rem;text-align:center;display:flex;flex-direction:column;gap:.25rem}
+.st-n{font-size:1.35rem;font-weight:900;line-height:1;color:var(--k)}
+.st-l{font-size:.52rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--g3);line-height:1.3}
+.st.ok .st-n{color:var(--p)}
+.st.mid .st-n{color:#7a93b8}
+.st.bad .st-n{color:var(--er)}
+.st.pts{background:var(--k);border-color:var(--k)}
+.st.pts .st-n{color:var(--ey)}
+.st.pts .st-l{color:rgba(255,255,255,.55)}
 .sh{display:flex;align-items:baseline;justify-content:space-between;padding-bottom:.5rem;border-bottom:2px solid var(--k);margin-bottom:1rem}
 .sh h2{font-size:.7rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
 .sh a{font-size:.6rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--p);text-decoration:none;cursor:pointer}
@@ -148,7 +159,7 @@ html,body{overflow-x:hidden;max-width:100%}
 /* ── PARTIDO CARDS ──────────────────────────────
    auto-fit por CONTENEDOR: 1 columna si es angosto, 2 si es ancho.
    No depende del ancho de pantalla → funciona en cualquier móvil. */
-.partidos-2col{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:0;width:100%;max-width:100%}
+.partidos-2col{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:0;width:0;min-width:100%;max-width:100%}
 .partidos-2col>*{min-width:0;max-width:100%}
 /* Cards de partido en GRUPOS: con aire entre ellas, no pegadas */
 #g-detail .partidos-2col{gap:.85rem}
@@ -238,7 +249,7 @@ html,body{overflow-x:hidden;max-width:100%}
 .cal-arrow{position:absolute;top:50%;transform:translateY(-50%);background:var(--w);border:1px solid var(--ln);width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;z-index:10;transition:.15s;user-select:none}
 .cal-arrow:hover{background:var(--g1)}
 .cal-arrow.left{left:0}.cal-arrow.right{right:0}
-.cal-dias{overflow-x:auto;scrollbar-width:none;padding:0 32px;display:flex;gap:.4rem;scroll-behavior:smooth}
+.cal-dias{overflow-x:auto;scrollbar-width:none;padding:0 32px;display:flex;gap:.4rem;scroll-behavior:smooth;width:0;min-width:100%;-webkit-overflow-scrolling:touch}
 .cal-dias::-webkit-scrollbar{display:none}
 .cal-dia{flex:none;padding:.5rem .75rem;background:var(--w);border:1px solid var(--ln);cursor:pointer;text-align:center;transition:.15s;min-width:58px}
 .cal-dia:hover{background:var(--g1)}
@@ -383,7 +394,7 @@ html,body{overflow-x:hidden;max-width:100%}
 .sim-bracket-hint{font-size:.66rem;color:var(--g3);margin-bottom:.85rem;line-height:1.4}
 
 /* inicio partidos - full width 2 cols */
-#inicio-parts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:0;width:100%;max-width:100%}
+#inicio-parts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:0;width:0;min-width:100%;max-width:100%}
 #inicio-parts>*{min-width:0;max-width:100%}
 #inicio-parts .pc{margin-right:-1px;margin-bottom:-1px}
 @media(max-width:768px){#inicio-parts{grid-template-columns:1fr}}
@@ -578,6 +589,7 @@ html,body{overflow-x:hidden;max-width:100%}
             </div>
           </div>
 
+          <div id="inicio-stats"></div>
           <div class="sh" style="margin-top:1.25rem"><h2>Próximos partidos</h2><a onclick="goTo('hoy')">Ver hoy →</a></div>
           <div id="inicio-parts"></div>
         </div>
@@ -1140,8 +1152,39 @@ function renderInicio(){
   const prox=PARTIDOS_GRUPOS.filter(p=>estadoP(p)==='hoy'||estadoP(p)==='futuro').slice(0,4);
   const el=document.getElementById('inicio-parts');
   el.innerHTML=prox.length?prox.map(p=>partidoCard(p)).join(''):'<p style="color:var(--g3);font-size:.75rem;padding:.5rem">No hay partidos próximos.</p>';
+  renderMisStats();
   renderInicioRank();
 }
+
+// ── MIS ESTADÍSTICAS: compara mis pronósticos vs resultados oficiales ──
+function renderMisStats(){
+  const el=document.getElementById('inicio-stats');
+  if(!el) return;
+  let hechos=0, exactos=0, soloRes=0, fallas=0;
+  PARTIDOS_GRUPOS.forEach(p=>{
+    const pr=misP[p.id];
+    if(!pr||pr.local===undefined||pr.visitante===undefined) return;
+    hechos++;
+    const res=resultados[p.id];
+    if(!res||!res.finalizado) return; // aún sin resultado oficial
+    const pl=parseInt(pr.local), pv=parseInt(pr.visitante);
+    if(pl===res.local&&pv===res.visitante){exactos++;return;}
+    const okSigno=(res.local>res.visitante&&pl>pv)||(res.visitante>res.local&&pv>pl)||(res.local===res.visitante&&pl===pv);
+    if(okSigno) soloRes++; else fallas++;
+  });
+  const evaluados=exactos+soloRes+fallas;
+  const pct=evaluados?Math.round(((exactos+soloRes)/evaluados)*100):0;
+  el.innerHTML=`
+    <div class="sh"><h2>Mi resumen</h2></div>
+    <div class="stats-grid">
+      <div class="st"><span class="st-n">${hechos}</span><span class="st-l">Pronósticos<br/>realizados</span></div>
+      <div class="st ok"><span class="st-n">${exactos}</span><span class="st-l">Marcador<br/>exacto 🎯</span></div>
+      <div class="st mid"><span class="st-n">${soloRes}</span><span class="st-l">Resultado<br/>correcto ✓</span></div>
+      <div class="st bad"><span class="st-n">${fallas}</span><span class="st-l">Fallas ✗</span></div>
+      <div class="st pts"><span class="st-n">${pct}%</span><span class="st-l">Efectividad<br/>(${evaluados} evaluados)</span></div>
+    </div>`;
+}
+
 async function renderInicioRank(){
   const el=document.getElementById('inicio-rank');
   try{
@@ -1544,6 +1587,6 @@ function toast(msg,type='ok'){
   clearTimeout(window._tt); window._tt=setTimeout(()=>t.classList.remove('show'),3500);
 }
 </script>
-<div style="text-align:center;padding:.5rem;font-size:.55rem;color:#bbb;letter-spacing:1px">v2.1</div>
+<div style="text-align:center;padding:.5rem;font-size:.55rem;color:#bbb;letter-spacing:1px">v2.3</div>
 </body>
 </html>
